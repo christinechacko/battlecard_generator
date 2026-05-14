@@ -1,0 +1,114 @@
+[
+  {
+    "id": "coca-cola-classic",
+    "name": "Coca-Cola Classic",
+    "brand": "The Coca-Cola Company",
+    "type": "Cola",
+    "claims": "The world's most recognized beverage. Iconic taste that has not changed since 1985. Unmatched brand equity and consumer nostalgia. Universal menu and venue fit.",
+    "target": "General consumers, restaurants, stadiums, convenience stores, airlines, movie theaters"
+  },
+  {
+    "id": "coke-zero-sugar",
+    "name": "Coca-Cola Zero Sugar",
+    "brand": "The Coca-Cola Company",
+    "type": "Cola",
+    "claims": "Full Coca-Cola taste with zero sugar. Fastest-growing cola SKU. Appeals to health-conscious consumers without sacrificing brand recognition.",
+    "target": "Health-conscious consumers, hospitals, universities, airlines, restaurants"
+  },
+  {
+    "id": "diet-coke",
+    "name": "Diet Coke",
+    "brand": "The Coca-Cola Company",
+    "type": "Cola",
+    "claims": "Distinct lighter taste. Decades of brand loyalty especially among women 25-45. Different flavor profile from Zero Sugar — not a substitute.",
+    "target": "Loyal diet soda drinkers, restaurants, general consumers"
+  },
+  {
+    "id": "sprite",
+    "name": "Sprite",
+    "brand": "The Coca-Cola Company",
+    "type": "Sparkling",
+    "claims": "Number one lemon-lime soda globally. Strong hip-hop and youth culture brand presence. Clean crisp taste with broad demographic appeal.",
+    "target": "General consumers, restaurants, fast food chains, sporting venues, universities"
+  },
+  {
+    "id": "fanta",
+    "name": "Fanta",
+    "brand": "The Coca-Cola Company",
+    "type": "Sparkling",
+    "claims": "Wide variety of fruit flavors. Playful, youthful brand identity. Strong international recognition. Drives incremental purchases in venues with diverse audiences.",
+    "target": "Younger consumers, theme parks, movie theaters, international audiences"
+  },
+  {
+    "id": "powerade",
+    "name": "Powerade",
+    "brand": "The Coca-Cola Company",
+    "type": "Sports drink",
+    "claims": "ION4 electrolyte formula. Official sports drink of the NCAA and multiple Olympics. Value-priced vs Gatorade. Available in broad flavor range.",
+    "target": "Athletes, sporting venues, universities, gyms, schools"
+  },
+  {
+    "id": "smartwater",
+    "name": "Smartwater",
+    "brand": "The Coca-Cola Company",
+    "type": "Water",
+    "claims": "Vapor-distilled premium water with electrolytes. Aspirational, clean aesthetic. Celebrity associations. Premium price point drives revenue per unit.",
+    "target": "Health-conscious consumers, airlines, hotels, gyms, hospitals, convenience stores"
+  },
+  {
+    "id": "dasani",
+    "name": "Dasani",
+    "brand": "The Coca-Cola Company",
+    "type": "Water",
+    "claims": "Purified water with minerals added for taste. Broad availability and competitive price point. Reliable volume driver for venues needing an affordable water option.",
+    "target": "Sporting venues, convenience stores, restaurants, hospitals, general consumers"
+  },
+  {
+    "id": "minute-maid",
+    "name": "Minute Maid",
+    "brand": "The Coca-Cola Company",
+    "type": "Juice",
+    "claims": "Most trusted juice brand in the US. Wide portfolio including OJ, lemonade, fruit punch, and juice boxes. Strong in family and institutional settings.",
+    "target": "Hospitals, airlines, universities, restaurants, movie theaters, families"
+  },
+  {
+    "id": "gold-peak-tea",
+    "name": "Gold Peak Tea",
+    "brand": "The Coca-Cola Company",
+    "type": "Tea",
+    "claims": "Brewed tea taste in a bottle. Homestyle positioning. Fastest-growing RTD tea brand in the US. Available in sweet, unsweet, green, and diet varieties.",
+    "target": "General consumers, restaurants, convenience stores, hospitals"
+  },
+  {
+    "id": "fairlife",
+    "name": "Fairlife",
+    "brand": "The Coca-Cola Company",
+    "type": "Milk / protein",
+    "claims": "Ultra-filtered milk with 50% more protein and 50% less sugar than regular milk. Lactose-free. Premium price point. Fast-growing in health and fitness channels.",
+    "target": "Health-conscious consumers, hospitals, universities, gyms, airlines"
+  },
+  {
+    "id": "topo-chico",
+    "name": "Topo Chico",
+    "brand": "The Coca-Cola Company",
+    "type": "Sparkling water",
+    "claims": "Cult-favorite sparkling mineral water from Mexico. Premium on-premise positioning. Strong with cocktail culture and upscale restaurant accounts. Authentic heritage story.",
+    "target": "Upscale restaurants, bars, hotels, health-conscious consumers"
+  },
+  {
+    "id": "simply-orange",
+    "name": "Simply Orange",
+    "brand": "The Coca-Cola Company",
+    "type": "Juice",
+    "claims": "Not-from-concentrate premium OJ. Clean label, no preservatives. Refrigerated positioning commands higher shelf presence and price point.",
+    "target": "Upscale restaurants, hotels, airlines, hospitals, health-conscious consumers"
+  },
+  {
+    "id": "honest-tea",
+    "name": "Honest Tea",
+    "brand": "The Coca-Cola Company",
+    "type": "Tea",
+    "claims": "Organic, low-sugar RTD tea. Appeals to health-conscious and sustainability-minded consumers. B Corp heritage. Strong in natural and specialty retail.",
+    "target": "Health-conscious consumers, hospitals, universities, natural food buyers"
+  }
+]

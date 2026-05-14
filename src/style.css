@@ -1,0 +1,626 @@
+/*
+  ============================================================
+  GLOBAL RESET
+
+  The browser applies default margins and padding to many elements
+  (h1, p, ul, body, etc.) which vary across browsers and create
+  inconsistent spacing. This reset zeroes them all out so we start
+  from a known baseline and apply spacing intentionally.
+
+  box-sizing: border-box changes how width and height are calculated.
+  By default (content-box), padding and border are added ON TOP of
+  the declared width — so a div with width:200px and padding:10px
+  is actually 220px wide. border-box includes padding and border
+  IN the declared width, making layout math predictable.
+  The * selector applies this to every element on the page.
+  ============================================================
+*/
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+/*
+  ============================================================
+  BODY
+
+  Sets the base font, background, text color, and padding for
+  the entire page. font-family uses the system font stack:
+  -apple-system picks San Francisco on Apple devices,
+  BlinkMacSystemFont does the same in Chrome on Mac,
+  "Segoe UI" is the Windows system font.
+  This avoids loading a web font while still looking native
+  and clean on every platform.
+  ============================================================
+*/
+body {
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  background: #f5f5f5; /* Light grey background makes white cards pop */
+  color: #111;         /* Near-black, softer than pure #000 */
+  padding: 2rem;       /* Breathing room on all sides */
+}
+
+/*
+  ============================================================
+  APP WRAPPER
+
+  Constrains the content width so it doesn't stretch uncomfortably
+  on wide monitors. 860px is wide enough to show a two-column
+  win/lose layout comfortably. margin: 0 auto centers it
+  horizontally by distributing leftover space equally on both sides.
+  ============================================================
+*/
+.app {
+  max-width: 860px;
+  margin: 0 auto;
+}
+
+/*
+  ============================================================
+  PAGE HEADER
+  ============================================================
+*/
+.header {
+  margin-bottom: 1.5rem;
+}
+
+.header h1 {
+  font-size: 22px;
+  font-weight: 600;
+}
+
+.header p {
+  font-size: 14px;
+  color: #666;    /* Lighter than body text to create visual hierarchy */
+  margin-top: 4px;
+}
+
+/*
+  ============================================================
+  TAB NAVIGATION
+
+  Tabs sit in a flex row with no gap so the buttons butt up
+  against each other. The container has a bottom border that
+  runs the full width. Each individual tab button has its own
+  bottom border that sits on top of the container border —
+  transparent by default, #111 when active. The -1px margin-bottom
+  on the button makes its border overlap and "replace" the
+  container border, creating the classic connected tab effect.
+  ============================================================
+*/
+.tabs {
+  display: flex;
+  gap: 0;
+  margin-bottom: 1.5rem;
+  border-bottom: 1px solid #ddd;
+}
+
+.tab {
+  font-size: 14px;
+  padding: 10px 20px;
+  cursor: pointer;
+  border: none;
+  background: none;           /* Remove default button background */
+  color: #666;
+  border-bottom: 2px solid transparent; /* Reserve space for active indicator */
+  margin-bottom: -1px;        /* Overlap the container's border-bottom */
+  font-family: inherit;       /* Buttons don't inherit font-family by default */
+}
+
+.tab.active {
+  color: #111;
+  border-bottom: 2px solid #111; /* The active indicator — covers the container border */
+  font-weight: 500;
+}
+
+/*
+  ============================================================
+  CARDS
+
+  White elevated containers that group related content.
+  Used for the form, the battlecard output, each database tab,
+  and each individual database section (list vs add form).
+  The subtle border and border-radius give it a clean, modern
+  look without heavy shadows.
+  ============================================================
+*/
+.card {
+  background: #fff;
+  border: 1px solid #e0e0e0;
+  border-radius: 10px;
+  padding: 1.25rem;
+  margin-bottom: 1rem;
+}
+
+/* Section header inside a card, e.g. "Coca-Cola products" or "Add a product" */
+.tab-section-title {
+  font-size: 14px;
+  font-weight: 600;
+  margin-bottom: 1rem;
+  color: #111;
+}
+
+/*
+  ============================================================
+  FORMS
+
+  .form-row creates a two-column layout for pairs of inputs
+  using CSS Grid. gap:12px adds space between the columns.
+  On mobile this collapses to one column via the media query
+  at the bottom of this file.
+
+  .form-group wraps a label and its input in a flex column
+  so the label always sits above its input with consistent spacing.
+  ============================================================
+*/
+.form-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr; /* Two equal-width columns */
+  gap: 12px;
+  margin-bottom: 12px;
+}
+
+.form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 6px; /* Space between label and input */
+}
+
+.form-group label {
+  font-size: 13px;
+  color: #555;
+  font-weight: 500;
+}
+
+/*
+  Applies consistent styles to all three input types in one rule.
+  font-family: inherit is important — browsers apply a different
+  font to form elements by default, which would make them look
+  visually inconsistent with the rest of the page.
+*/
+.form-group select,
+.form-group input,
+.form-group textarea {
+  width: 100%;
+  padding: 8px 10px;
+  border: 1px solid #ddd;
+  border-radius: 6px;
+  font-size: 14px;
+  font-family: inherit;
+  background: #fff;
+  color: #111;
+}
+
+.form-group textarea {
+  min-height: 80px;
+  resize: vertical; /* Allow the user to resize vertically only, not horizontally */
+}
+
+/*
+  Focus styles — when a user clicks into or tabs to an input,
+  we remove the default browser focus ring (outline: none) and
+  replace it with a border color change. This keeps the design
+  clean while still providing a visible focus indicator.
+*/
+.form-group select:focus,
+.form-group input:focus,
+.form-group textarea:focus {
+  outline: none;
+  border-color: #999;
+}
+
+/*
+  ============================================================
+  CHECKBOXES
+
+  The ICP segment checkboxes in the add-product form use a
+  custom pill/chip style rather than plain checkboxes.
+  Each .checkbox-label wraps a native <input type="checkbox">
+  and its text in a styled container. The native checkbox is
+  still present and functional — we just change the container's
+  appearance rather than hiding the checkbox entirely, which
+  preserves accessibility.
+  ============================================================
+*/
+.checkbox-group {
+  display: flex;
+  flex-wrap: wrap; /* Wraps to new rows when there isn't enough width */
+  gap: 8px;
+  margin-top: 4px;
+}
+
+.checkbox-label {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 13px;
+  color: #444;
+  cursor: pointer;
+  background: #f5f5f5;
+  border: 1px solid #e0e0e0;
+  border-radius: 5px;
+  padding: 5px 10px;
+  transition: background 0.15s, border-color 0.15s; /* Smooth hover effect */
+}
+
+.checkbox-label:hover {
+  background: #eee;
+}
+
+/* Override the default width:100% we applied to all inputs above */
+.checkbox-label input {
+  width: auto;
+  margin: 0;
+  accent-color: #111; /* Colors the checkbox tick to match the brand */
+}
+
+/*
+  ============================================================
+  BUTTONS
+
+  Three button variants with different visual weight:
+  - .btn-primary: filled, high emphasis (generate, save to DB)
+  - .btn-secondary: outlined, medium emphasis (save battlecard)
+  - .btn-danger: outlined in red, destructive action (delete)
+
+  All buttons inherit font-family explicitly because browsers
+  don't inherit it into button elements by default.
+  ============================================================
+*/
+
+/* Primary: solid dark background, white text */
+.btn-primary {
+  background: #111;
+  color: #fff;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 6px;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  width: 100%;
+  margin-top: 8px;
+  font-family: inherit;
+}
+
+.btn-primary:hover { background: #333; }
+/* Disabled state for when the API call is in flight */
+.btn-primary:disabled { opacity: 0.4; cursor: not-allowed; }
+
+/* Secondary: white background, dark border — less visually dominant */
+.btn-secondary {
+  background: #fff;
+  color: #111;
+  border: 1px solid #ddd;
+  padding: 9px 20px;
+  border-radius: 6px;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  width: 100%;
+  margin-top: 8px;
+  font-family: inherit;
+  transition: border-color 0.15s;
+}
+
+.btn-secondary:hover { border-color: #999; }
+
+/* Danger: red text and border, white background — signals destructive action */
+.btn-danger {
+  background: #fff;
+  color: #c0392b;
+  border: 1px solid #f5c6c6;
+  padding: 7px 14px;
+  border-radius: 6px;
+  font-size: 13px;
+  font-weight: 500;
+  cursor: pointer;
+  font-family: inherit;
+  margin-top: 12px;
+  transition: background 0.15s;
+}
+
+.btn-danger:hover { background: #fdf2f2; }
+
+/*
+  ============================================================
+  DATABASE ITEM ROWS
+
+  Used in both the competitors and products list views.
+  Each row is a flex container with the main content (name,
+  meta, claims) on the left and a badge on the right.
+  align-items: flex-start keeps the badge pinned to the top
+  of the row rather than stretching to match tall content.
+  ============================================================
+*/
+.db-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  padding: 12px 14px;
+  background: #f9f9f9;
+  border-radius: 6px;
+  margin-bottom: 8px;
+  gap: 12px;
+}
+
+/* Remove bottom margin from the last item so it doesn't add extra space */
+.db-item:last-child { margin-bottom: 0; }
+
+.db-item-name {
+  font-size: 14px;
+  font-weight: 500;
+  color: #111;
+}
+
+/* Secondary info line: brand · type */
+.db-item-meta {
+  font-size: 12px;
+  color: #888;
+  margin-top: 2px;
+}
+
+/* Claims/description text — smaller and lighter than the name */
+.db-item-claims {
+  font-size: 12px;
+  color: #666;
+  margin-top: 4px;
+  line-height: 1.5;
+}
+
+/* Tag row for ICP chips on product items */
+.db-item-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+  margin-top: 6px;
+}
+
+/* Individual ICP tag chip */
+.tag {
+  font-size: 11px;
+  padding: 2px 7px;
+  border-radius: 4px;
+  background: #e8f0fe; /* Light blue background */
+  color: #1a56db;      /* Dark blue text */
+}
+
+/*
+  ============================================================
+  BADGES
+
+  Small labels on the right side of each database row.
+  .badge is the default (grey) used for built-in items.
+  .badge-new is green, applied to custom user-added items
+  to distinguish them from the pre-loaded data.
+
+  flex-shrink: 0 prevents the badge from getting compressed
+  when the item name is very long.
+  ============================================================
+*/
+.badge {
+  font-size: 11px;
+  padding: 3px 8px;
+  border-radius: 4px;
+  background: #efefef;
+  color: #555;
+  white-space: nowrap; /* Prevent badge text from wrapping */
+  flex-shrink: 0;
+}
+
+.badge-new {
+  background: #e6f9f0; /* Light green */
+  color: #1a7a4a;      /* Dark green */
+}
+
+/*
+  ============================================================
+  SAVED BATTLECARDS
+
+  Each saved card is an accordion/collapsible component.
+  The header is always visible and acts as the click target.
+  The body starts hidden (display:none set inline in the HTML)
+  and is toggled by toggleSavedCard() in main.js.
+
+  overflow: hidden on .saved-item ensures the border-radius
+  clips the child elements — without it, the header's square
+  corners would poke outside the rounded container.
+  ============================================================
+*/
+.saved-item {
+  border: 1px solid #e0e0e0;
+  border-radius: 8px;
+  margin-bottom: 10px;
+  overflow: hidden;
+}
+
+.saved-item-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 12px 14px;
+  cursor: pointer;
+  background: #f9f9f9;
+  transition: background 0.15s;
+}
+
+.saved-item-header:hover { background: #f0f0f0; }
+
+/* The ▼ chevron on the right of each saved card header */
+.expand-icon {
+  font-size: 10px;
+  color: #aaa;
+}
+
+/* The expanded content area — only visible when toggled open */
+.saved-item-body {
+  padding: 14px;
+  border-top: 1px solid #e0e0e0;
+}
+
+/*
+  ============================================================
+  BATTLECARD SECTIONS
+
+  .section-card is the grey container used for each battlecard
+  section (positioning, win/lose, objections, etc.).
+  .section-title is the small uppercase label at the top.
+  .section-content is the body where main.js injects HTML.
+  ============================================================
+*/
+.section-card {
+  background: #f9f9f9;
+  border-radius: 8px;
+  padding: 1rem;
+  margin-bottom: 10px;
+}
+
+/* Small caps label — creates visual hierarchy above the content */
+.section-title {
+  font-size: 11px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: #888;
+  margin-bottom: 8px;
+}
+
+.section-content {
+  font-size: 14px;
+  color: #111;
+  line-height: 1.7; /* Generous line height improves readability of long text */
+}
+
+/* Indent bullet lists injected by main.js */
+.section-content ul { padding-left: 18px; }
+.section-content li { margin-bottom: 5px; }
+
+/*
+  WIN / LOSE COLOR CODING
+  Applies a tinted background and matching title color to make
+  these sections immediately distinguishable without reading the label.
+*/
+.win { background: #f0faf4; }           /* Light green */
+.win .section-title { color: #2d7a4f; } /* Dark green */
+
+.lose { background: #fdf2f2; }           /* Light red */
+.lose .section-title { color: #b03030; } /* Dark red */
+
+/*
+  Two-column side-by-side layout for win and lose sections.
+  margin-bottom: 0 on the inner section cards removes the
+  bottom margin since the grid gap handles spacing instead.
+*/
+.win-lose-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+  margin-bottom: 10px;
+}
+
+.win-lose-row .section-card { margin-bottom: 0; }
+
+/*
+  ============================================================
+  OBJECTION HANDLING
+
+  Each objection is a paired Q&A block. The separator line
+  between items is removed on the last child so there's no
+  trailing border at the bottom of the section.
+  ============================================================
+*/
+.objection-item {
+  margin-bottom: 12px;
+  padding-bottom: 12px;
+  border-bottom: 1px solid #eee;
+}
+
+.objection-item:last-child {
+  margin-bottom: 0;
+  padding-bottom: 0;
+  border-bottom: none;
+}
+
+/* The objection (question) — bold to stand out */
+.objection-q {
+  font-weight: 500;
+  margin-bottom: 4px;
+  font-size: 14px;
+}
+
+/* The response (answer) — slightly lighter to create Q&A hierarchy */
+.objection-a {
+  color: #555;
+  font-size: 14px;
+  line-height: 1.6;
+}
+
+/*
+  ============================================================
+  MISCELLANEOUS UTILITY CLASSES
+  ============================================================
+*/
+
+/* Shown while the API call is in flight */
+.loading {
+  text-align: center;
+  padding: 2rem;
+  color: #888;
+  font-size: 14px;
+}
+
+/* Title bar at the top of the generated battlecard */
+.battlecard-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1rem;
+  padding-bottom: 0.75rem;
+  border-bottom: 1px solid #e0e0e0;
+}
+
+.battlecard-header h2 {
+  font-size: 16px;
+  font-weight: 600;
+}
+
+/* The ICP label shown next to the battlecard title */
+.battlecard-header .meta {
+  font-size: 12px;
+  color: #888;
+}
+
+/* Shown when a list is empty (no competitors, no saved cards, etc.) */
+.empty-state {
+  color: #888;
+  font-size: 14px;
+  text-align: center;
+  padding: 1.5rem 0;
+}
+
+/* Inline validation and API error messages */
+.error {
+  color: #c0392b;
+  font-size: 13px;
+  margin-top: 8px;
+}
+
+/* Success confirmations (saved, added) */
+.success {
+  color: #1a7a4a;
+  font-size: 13px;
+  margin-top: 8px;
+}
+
+/*
+  ============================================================
+  RESPONSIVE BREAKPOINT
+
+  At 600px and below (most phones), the two-column form rows
+  and the side-by-side win/lose layout collapse to a single
+  column so content doesn't get squeezed. Body padding is also
+  reduced to reclaim screen real estate on small displays.
+  ============================================================
+*/
+@media (max-width: 600px) {
+  body { padding: 1rem; }
+  .form-row { grid-template-columns: 1fr; }      /* Stack form pairs vertically */
+  .win-lose-row { grid-template-columns: 1fr; }  /* Stack win/lose vertically */
+}
