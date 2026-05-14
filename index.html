@@ -1,0 +1,423 @@
+<!DOCTYPE html>
+<!--
+  DOCTYPE tells the browser to render this page in standards mode.
+  Without it, browsers fall back to "quirks mode" which has inconsistent
+  layout behavior across browsers — especially for box model and margins.
+-->
+<html lang="en">
+<head>
+  <!--
+    charset=UTF-8 ensures the browser correctly renders any special
+    characters (accents, symbols, em dashes). Without this, characters
+    outside basic ASCII can display as garbled text.
+  -->
+  <meta charset="UTF-8">
+
+  <!--
+    The viewport meta tag controls how the page scales on mobile devices.
+    width=device-width makes the layout fill the screen width.
+    initial-scale=1.0 prevents the browser from zooming out to fit
+    a "desktop" layout — essential for the responsive CSS to work.
+  -->
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <title>Coca-Cola Battlecard Generator</title>
+
+  <!--
+    CSS is loaded in the <head> so it's applied before any HTML renders.
+    This prevents a flash of unstyled content (FOUC) where the user briefly
+    sees raw HTML before styles are applied.
+  -->
+  <link rel="stylesheet" href="src/style.css">
+</head>
+<body>
+
+<!--
+  .app is the outermost wrapper. In CSS it's set to max-width: 860px
+  and centered with margin: auto. This keeps content readable on wide
+  screens without stretching across the full viewport.
+-->
+<div class="app">
+
+  <!-- ============================================================
+    PAGE HEADER
+    Simple title and subtitle. Not interactive — just orientation
+    for the user. Could be extended with a logo or nav links later.
+  ============================================================ -->
+  <div class="header">
+    <h1>Coca-Cola battlecard generator</h1>
+    <p>Generate competitive battlecards tailored to your buyer.</p>
+  </div>
+
+  <!-- ============================================================
+    TAB NAVIGATION
+
+    Four buttons that control which content section is visible.
+    Each button calls showTab() with a name that matches the ID
+    of the corresponding content div (e.g. 'generate' → #tab-generate).
+
+    The first tab has class="tab active" so it appears selected on
+    page load without any JavaScript running first.
+
+    All tabs are <button> elements rather than <a> tags because they
+    don't navigate to a new URL — they toggle visibility within the
+    same page. Using the semantically correct element matters for
+    accessibility (screen readers announce buttons differently from links).
+  ============================================================ -->
+  <div class="tabs">
+    <button class="tab active" onclick="showTab('generate')">Generate battlecard</button>
+    <button class="tab" onclick="showTab('products')">Our product database</button>
+    <button class="tab" onclick="showTab('competitors')">Competitor database</button>
+    <button class="tab" onclick="showTab('saved')">Saved battlecards</button>
+  </div>
+
+  <!-- ============================================================
+    GENERATE TAB
+    The default visible tab. Contains two sections:
+    1. The input form (competitor + ICP selectors)
+    2. The battlecard output (hidden until generation succeeds)
+  ============================================================ -->
+  <div id="tab-generate">
+
+    <!-- Input form card -->
+    <div class="card">
+      <!--
+        .form-row lays out the two dropdowns side by side using CSS Grid.
+        On mobile (< 600px), the grid collapses to a single column
+        via the media query in style.css.
+      -->
+      <div class="form-row">
+
+        <!--
+          COMPETITOR DROPDOWN
+          Starts with a placeholder "Loading..." option. On DOMContentLoaded,
+          main.js calls renderCompetitorDropdown() which replaces this
+          content with <option> elements built from the competitors data.
+          The value attribute on each option will be the competitor's ID,
+          which we use to look up the full competitor object when generating.
+        -->
+        <div class="form-group">
+          <label>Competitor product</label>
+          <select id="competitor-select">
+            <option value="">Loading...</option>
+          </select>
+        </div>
+
+        <!--
+          ICP (IDEAL CUSTOMER PROFILE) DROPDOWN
+          Hardcoded in the HTML since these segments are fixed — they
+          don't come from a JSON file. The value is a snake_case key
+          that maps to the CUSTOMER_LABELS and CUSTOMER_DISPLAY objects
+          in main.js. The label shown to the user is human-readable;
+          the value passed to the API prompt is a longer, more descriptive
+          string that gives the model better context.
+        -->
+        <div class="form-group">
+          <label>Customer type (ICP)</label>
+          <select id="customer-select">
+            <option value="sporting_venue">Sporting venue / stadium</option>
+            <option value="university">University / college campus</option>
+            <option value="movie_theater">Movie theater chain</option>
+            <option value="airline">Airline / airport concessions</option>
+            <option value="hospital">Hospital / healthcare cafeteria</option>
+            <option value="convenience_store">Convenience store / gas station</option>
+            <option value="restaurant_chain">Restaurant / fast food chain</option>
+            <option value="general_consumer">General consumer</option>
+          </select>
+        </div>
+      </div>
+
+      <!--
+        GENERATE BUTTON
+        id="generate-btn" lets main.js disable the button while the API
+        call is in flight, preventing the user from submitting twice.
+        It's re-enabled once the response returns (success or failure).
+      -->
+      <button class="btn-primary" id="generate-btn" onclick="generateBattlecard()">Generate battlecard</button>
+
+      <!--
+        Error message container. Hidden by default via inline style.
+        main.js sets its textContent and removes display:none when
+        an error occurs (validation failure or API error).
+        Using a dedicated element rather than alert() keeps the error
+        in context and doesn't block the UI.
+      -->
+      <div id="gen-error" class="error" style="display:none"></div>
+    </div>
+
+    <!--
+      LOADING STATE
+      Shown while the API call is in progress. Hidden by default.
+      main.js toggles this between display:none and display:block
+      around the async API call so the user knows something is happening.
+    -->
+    <div id="battlecard-loading" class="loading" style="display:none">
+      Generating battlecard...
+    </div>
+
+    <!--
+      BATTLECARD OUTPUT
+      Hidden until a successful API response is received. main.js
+      populates each child element by ID and then sets this div to
+      display:block and scrolls it into view.
+
+      All the content divs inside are empty on page load — their
+      content is injected entirely by JavaScript after the API responds.
+    -->
+    <div id="battlecard-output" style="display:none">
+      <div class="card">
+
+        <!-- Header row: title on the left, ICP label on the right -->
+        <div class="battlecard-header">
+          <h2 id="bc-title">Battlecard</h2>
+          <span class="meta" id="bc-meta"></span>
+        </div>
+
+        <!-- Positioning statement: a paragraph of text, not a list -->
+        <div class="section-card">
+          <div class="section-title">Positioning statement</div>
+          <div class="section-content" id="bc-positioning"></div>
+        </div>
+
+        <!--
+          Win/lose sections sit side by side in a two-column grid.
+          .win and .lose apply different background colors and title
+          colors (green vs red) to make them visually distinct at a glance.
+        -->
+        <div class="win-lose-row">
+          <div class="section-card win">
+            <div class="section-title">Where we win</div>
+            <div class="section-content" id="bc-win"></div>
+          </div>
+          <div class="section-card lose">
+            <div class="section-title">Where we lose</div>
+            <div class="section-content" id="bc-lose"></div>
+          </div>
+        </div>
+
+        <!-- Objection handling: rendered as paired Q&A blocks by main.js -->
+        <div class="section-card">
+          <div class="section-title">Objection handling</div>
+          <div class="section-content" id="bc-objections"></div>
+        </div>
+
+        <!-- Discovery questions: rendered as a <ul> list by main.js -->
+        <div class="section-card">
+          <div class="section-title">Discovery questions</div>
+          <div class="section-content" id="bc-discovery"></div>
+        </div>
+
+        <!-- Recommended Coke product: product name + pitch messaging -->
+        <div class="section-card">
+          <div class="section-title">Recommended Coke product</div>
+          <div class="section-content" id="bc-recommended"></div>
+        </div>
+
+        <!--
+          Combat disinterest section.
+          The title (#bc-combat-label) is dynamically updated by main.js
+          to include the competitor's name, e.g.
+          "If they say they're happy with Red Bull"
+          This makes the section feel more specific and actionable.
+        -->
+        <div class="section-card">
+          <div class="section-title" id="bc-combat-label">If they say they're happy with the competitor</div>
+          <div class="section-content" id="bc-combat"></div>
+        </div>
+
+        <!--
+          Save button uses .btn-secondary (outlined style) to visually
+          distinguish it from the primary generate action.
+          #save-confirm is shown briefly after saving to confirm the action,
+          then hidden again via setTimeout in main.js.
+        -->
+        <button class="btn-secondary" onclick="saveBattlecard()">Save battlecard</button>
+        <div id="save-confirm" class="success" style="display:none">Battlecard saved.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============================================================
+    PRODUCTS TAB
+    Hidden on load (display:none). Shown when the user clicks
+    the "Our product database" tab.
+
+    Split into two cards:
+    1. The product list — populated by renderProductList() in main.js
+    2. The add form — saves new products to localStorage via addProduct()
+  ============================================================ -->
+  <div id="tab-products" style="display:none">
+
+    <!-- Product list card — content injected by main.js -->
+    <div class="card">
+      <h3 class="tab-section-title">Coca-Cola products</h3>
+      <div id="product-list"></div>
+    </div>
+
+    <!-- Add product form card -->
+    <div class="card">
+      <h3 class="tab-section-title">Add a product</h3>
+
+      <!-- Name is required — main.js validates this before saving -->
+      <div class="form-group" style="margin-bottom:12px">
+        <label>Product name *</label>
+        <input type="text" id="new-product-name" placeholder="e.g. Coca-Cola Starlight">
+      </div>
+
+      <div class="form-row">
+        <div class="form-group">
+          <label>Category *</label>
+          <!--
+            The category value is stored in the product object and
+            displayed as the product's type badge in the list view.
+          -->
+          <select id="new-product-category">
+            <option value="cola">Cola</option>
+            <option value="diet_cola">Diet / Zero cola</option>
+            <option value="sparkling">Sparkling / flavored soda</option>
+            <option value="sports">Sports / hydration</option>
+            <option value="water">Water</option>
+            <option value="juice">Juice</option>
+            <option value="tea_coffee">Tea / coffee</option>
+            <option value="energy">Energy</option>
+            <option value="other">Other</option>
+          </select>
+        </div>
+      </div>
+
+      <!-- Description maps to the 'claims' field in the product object -->
+      <div class="form-group" style="margin-bottom:12px">
+        <label>Description</label>
+        <textarea id="new-product-description" placeholder="Brief product description"></textarea>
+      </div>
+
+      <!--
+        Key selling points and best-for checkboxes are collected here
+        but not currently used in the recommendation logic — that runs
+        on the 'target' field string match in main.js. These fields are
+        here for future use if the recommendation logic is upgraded.
+      -->
+      <div class="form-group" style="margin-bottom:12px">
+        <label>Key selling points</label>
+        <textarea id="new-product-selling-points" placeholder="Comma-separated — e.g. No sugar, great taste, same Coke satisfaction"></textarea>
+      </div>
+
+      <!--
+        ICP checkboxes let the user tag which buyer segments this product
+        is best suited for. Each checkbox value is a snake_case ICP key
+        matching the keys in CUSTOMER_LABELS / CUSTOMER_DISPLAY in main.js.
+      -->
+      <div class="form-group" style="margin-bottom:12px">
+        <label>Best for (ICP segments)</label>
+        <div class="checkbox-group" id="new-product-bestfor">
+          <label class="checkbox-label"><input type="checkbox" value="sporting_venue"> Sporting venue</label>
+          <label class="checkbox-label"><input type="checkbox" value="university"> University</label>
+          <label class="checkbox-label"><input type="checkbox" value="movie_theater"> Movie theater</label>
+          <label class="checkbox-label"><input type="checkbox" value="airline"> Airline</label>
+          <label class="checkbox-label"><input type="checkbox" value="hospital"> Hospital</label>
+          <label class="checkbox-label"><input type="checkbox" value="convenience_store"> Convenience store</label>
+          <label class="checkbox-label"><input type="checkbox" value="restaurant_chain"> Restaurant chain</label>
+          <label class="checkbox-label"><input type="checkbox" value="general_consumer"> General consumer</label>
+        </div>
+      </div>
+
+      <button class="btn-primary" onclick="addProduct()">Save to database</button>
+      <!-- Feedback messages shown/hidden by main.js after form submission -->
+      <div id="add-product-success" class="success" style="display:none">Product added successfully.</div>
+      <div id="add-product-error" class="error" style="display:none"></div>
+    </div>
+  </div>
+
+  <!-- ============================================================
+    COMPETITORS TAB
+    Same two-card pattern as the products tab:
+    1. List of all competitors (built-in + custom)
+    2. Add competitor form
+  ============================================================ -->
+  <div id="tab-competitors" style="display:none">
+
+    <!-- Competitor list — content injected by renderCompetitorList() -->
+    <div class="card">
+      <h3 class="tab-section-title">Competitor products</h3>
+      <div id="competitor-list"></div>
+    </div>
+
+    <!-- Add competitor form -->
+    <div class="card">
+      <h3 class="tab-section-title">Add a competitor</h3>
+
+      <div class="form-group" style="margin-bottom:12px">
+        <label>Competitor name *</label>
+        <input type="text" id="new-name" placeholder="e.g. Pepsi Nitro">
+      </div>
+
+      <div class="form-row">
+        <div class="form-group">
+          <label>Product type *</label>
+          <select id="new-type">
+            <option value="Cola">Cola</option>
+            <option value="Energy drink">Energy drink</option>
+            <option value="Sports drink">Sports drink</option>
+            <option value="Water">Water</option>
+            <option value="Juice">Juice</option>
+            <option value="Tea / coffee">Tea / coffee</option>
+            <option value="Other">Other</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>Parent brand</label>
+          <input type="text" id="new-brand" placeholder="e.g. PepsiCo">
+        </div>
+      </div>
+
+      <!--
+        Key claims is the most important field for battlecard quality.
+        This text is injected directly into the AI prompt as the
+        competitor's positioning — the more specific it is, the more
+        targeted the generated battlecard will be.
+      -->
+      <div class="form-group" style="margin-bottom:12px">
+        <label>Key claims / positioning</label>
+        <textarea id="new-claims" placeholder="What does this product claim? What's their pitch to buyers?"></textarea>
+      </div>
+
+      <div class="form-group" style="margin-bottom:12px">
+        <label>Target market</label>
+        <input type="text" id="new-target" placeholder="e.g. Gen Z consumers, stadium buyers">
+      </div>
+
+      <button class="btn-primary" onclick="addCompetitor()">Save to database</button>
+      <div id="add-success" class="success" style="display:none">Competitor added successfully.</div>
+      <div id="add-error" class="error" style="display:none"></div>
+    </div>
+  </div>
+
+  <!-- ============================================================
+    SAVED BATTLECARDS TAB
+    Single card containing the saved list. Content is injected by
+    renderSavedList() in main.js when this tab is opened.
+    Each saved card is collapsible — clicking it calls toggleSavedCard().
+  ============================================================ -->
+  <div id="tab-saved" style="display:none">
+    <div class="card">
+      <h3 class="tab-section-title">Saved battlecards</h3>
+      <div id="saved-list"></div>
+    </div>
+  </div>
+
+</div><!-- end .app -->
+
+<!--
+  SCRIPT TAG
+  Placed at the end of <body> so all HTML elements exist in the DOM
+  before the script runs. type="module" enables ES module syntax
+  (import/export) and also automatically defers execution until after
+  the document is parsed — so the DOMContentLoaded listener in main.js
+  fires at the right time.
+
+  The /src/main.js path is resolved by Vite's dev server locally
+  and by the Vite build output on GitHub Pages.
+-->
+<script type="module" src="/src/main.js"></script>
+</body>
+</html>

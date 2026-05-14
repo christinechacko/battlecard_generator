@@ -1,0 +1,66 @@
+[
+    {
+      "id": "pepsi-cola",
+      "name": "Pepsi Cola",
+      "brand": "PepsiCo",
+      "type": "Cola",
+      "claims": "Younger, bolder taste. Sweeter profile than Coke. Heavy music and entertainment sponsorships. Pepsi Challenge positioning around taste tests.",
+      "target": "General consumers, younger demographics, entertainment venues"
+    },
+    {
+      "id": "pepsi-zero",
+      "name": "Pepsi Zero Sugar",
+      "brand": "PepsiCo",
+      "type": "Cola",
+      "claims": "Zero sugar cola that claims to not sacrifice taste. Targets health-conscious cola drinkers who still want cola flavor.",
+      "target": "Health-conscious consumers, diet soda drinkers"
+    },
+    {
+      "id": "dr-pepper",
+      "name": "Dr Pepper",
+      "brand": "Keurig Dr Pepper",
+      "type": "Cola",
+      "claims": "Unique 23-flavor blend. Positioned as the alternative for people who find standard cola too plain. Cult-like consumer loyalty.",
+      "target": "Flavor-seekers, loyal fans, consumers who reject Coke/Pepsi binary"
+    },
+    {
+      "id": "red-bull",
+      "name": "Red Bull",
+      "brand": "Red Bull GmbH",
+      "type": "Energy drink",
+      "claims": "Gives you wings. Premium positioning. Dominant sports and extreme event sponsorships. Slim can perceived as sophisticated.",
+      "target": "Athletes, students, professionals, event venues, airlines"
+    },
+    {
+      "id": "monster",
+      "name": "Monster Energy",
+      "brand": "Monster Beverage",
+      "type": "Energy drink",
+      "claims": "Unleash the beast. Wider flavor variety than Red Bull. Strong gaming and motorsports presence. Lower price point than Red Bull.",
+      "target": "Gamers, younger males, venues seeking lower-cost energy option"
+    },
+    {
+      "id": "gatorade",
+      "name": "Gatorade",
+      "brand": "PepsiCo",
+      "type": "Sports drink",
+      "claims": "Science-backed hydration and electrolyte replenishment. Dominant in team sports sponsorships. Endorsed by top professional athletes.",
+      "target": "Athletes, sporting venues, schools, gyms"
+    },
+    {
+      "id": "prime",
+      "name": "Prime Hydration",
+      "brand": "Prime",
+      "type": "Sports drink",
+      "claims": "Logan Paul and KSI co-founded. Viral with Gen Z. No artificial colors or flavors. Heavy social media marketing.",
+      "target": "Gen Z, schools, gyms, venues wanting novelty appeal"
+    },
+    {
+      "id": "liquid-death",
+      "name": "Liquid Death",
+      "brand": "Liquid Death",
+      "type": "Water",
+      "claims": "Murder your thirst. Canned mountain water with punk/irreverent branding. Strong anti-plastic sustainability angle.",
+      "target": "Health-conscious consumers, counter-culture audiences, venues wanting a conversation piece"
+    }
+]
